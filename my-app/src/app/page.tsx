@@ -1,11 +1,16 @@
 'use client';
+import { useState } from 'react';
 import { Link as ScrollLink, Element } from 'react-scroll';
 import { Button } from "@/components/ui/button";
 import About from '@/components/ui/about';
 import Services from '@/components/ui/services';
 import Contact from '@/components/ui/contact';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AuthTabs } from "@/components/ui/tabs";
 
 export default function Home() {
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+
   return (
     <div className="bg-gradient-to-b from-black via-gray-900 to-gray-800 text-white min-h-screen">
       {/* Navbar */}
@@ -22,8 +27,31 @@ export default function Home() {
             <li><ScrollLink to="services" smooth={true} duration={500}><Button variant="ghost" className="text-white hover:text-gray-300">Services</Button></ScrollLink></li>
             <li><ScrollLink to="contact" smooth={true} duration={500}><Button variant="ghost" className="text-white hover:text-gray-300">Contact</Button></ScrollLink></li>
           </ul>
+          <Button 
+            variant="outline" 
+            className="text-white border-white hover:bg-white hover:text-black bg-transparent"
+            onClick={() => setIsAuthOpen(true)}
+          >
+            Register/Login
+          </Button>
         </nav>
       </header>
+
+      {/* Auth Modal */}
+      {isAuthOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white text-black p-6 rounded-lg max-w-md w-full">
+            <AuthTabs />
+            <Button 
+              variant="ghost" 
+              className="mt-4"
+              onClick={() => setIsAuthOpen(false)}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Home Section */}
       <Element name="home" className="h-screen flex flex-col items-center justify-center p-4">
