@@ -3,6 +3,8 @@
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 import { Button } from "@/components/ui/button"
+import { useAuth } from '@/components/AuthContext';
+import { useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 
@@ -56,6 +58,8 @@ TabsContent.displayName = TabsPrimitive.Content.displayName
 // New AuthTabs component
 const AuthTabs = () => {
   const [message, setMessage] = React.useState('');
+  const { login, checkAuth } = useAuth();
+  const router = useRouter();
 
   const handleAuth = async (event: React.FormEvent<HTMLFormElement>, endpoint: string) => {
     event.preventDefault();
@@ -70,12 +74,14 @@ const AuthTabs = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
+        credentials: 'include',
       });
       const result = await response.json();
       if (response.ok) {
         setMessage(result.message);
-        // Here you might want to save the user ID or handle successful auth
-        console.log('Success:', result);
+        login(); // Call login function to update state
+        await checkAuth(); // Check auth status after successful login/register
+        router.push('/'); // Redirect to main page
       } else {
         setMessage(result.error || 'An error occurred');
       }

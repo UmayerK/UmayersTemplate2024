@@ -1,7 +1,12 @@
+"use client"
+
 import * as React from "react"
 import { ChevronDownIcon } from "@radix-ui/react-icons"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { cva } from "class-variance-authority"
+import { useAuth } from '@/components/AuthContext';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import { cn } from "@/lib/utils"
 
@@ -115,6 +120,34 @@ const NavigationMenuIndicator = React.forwardRef<
 NavigationMenuIndicator.displayName =
   NavigationMenuPrimitive.Indicator.displayName
 
+const NavigationMenuDemo = () => {
+  const { isLoggedIn, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
+
+  return (
+    <NavigationMenu>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          {isLoggedIn ? (
+            <button onClick={handleLogout} className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Logout
+            </button>
+          ) : (
+            <Link href="/auth" className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Login/Register
+            </Link>
+          )}
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+};
+
 export {
   navigationMenuTriggerStyle,
   NavigationMenu,
@@ -125,4 +158,5 @@ export {
   NavigationMenuLink,
   NavigationMenuIndicator,
   NavigationMenuViewport,
+  NavigationMenuDemo
 }

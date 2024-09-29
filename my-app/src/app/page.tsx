@@ -1,15 +1,30 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link as ScrollLink, Element } from 'react-scroll';
 import { Button } from "@/components/ui/button";
 import About from '@/components/ui/about';
 import Services from '@/components/ui/services';
 import Contact from '@/components/ui/contact';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AuthTabs } from "@/components/ui/tabs";
+import { useAuth } from '@/components/AuthContext';
 
 export default function Home() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { isLoggedIn, logout } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setIsAuthOpen(false);
+    }
+  }, [isLoggedIn]);
+
+  const handleAuthClick = () => {
+    if (isLoggedIn) {
+      logout();
+    } else {
+      setIsAuthOpen(true);
+    }
+  };
 
   return (
     <div className="bg-gradient-to-b from-black via-gray-900 to-gray-800 text-white min-h-screen">
@@ -30,15 +45,15 @@ export default function Home() {
           <Button 
             variant="outline" 
             className="text-white border-white hover:bg-white hover:text-black bg-transparent"
-            onClick={() => setIsAuthOpen(true)}
+            onClick={handleAuthClick}
           >
-            Register/Login
+            {isLoggedIn ? 'Logout' : 'Register/Login'}
           </Button>
         </nav>
       </header>
 
       {/* Auth Modal */}
-      {isAuthOpen && (
+      {!isLoggedIn && isAuthOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white text-black p-6 rounded-lg max-w-md w-full">
             <AuthTabs />
